@@ -14,12 +14,7 @@ type Cartridge struct {
 	chrROM []byte
 }
 
-func loadNESROM(filename string) (*Cartridge, error) {
-	romData, err := ioutil.ReadFile(filename)
-	if err != nil {
-		return nil, err
-	}
-
+func loadNESROM(romData []byte) (*Cartridge, error) {
 	// Parse header
 	prgROMSize := int(romData[4]) * PRGROMBankSize
 	chrROMSize := int(romData[5]) * CHRROMBankSize
@@ -42,7 +37,12 @@ func loadNESROM(filename string) (*Cartridge, error) {
 }
 
 func NewCartridge(filename string) *Cartridge {
-	c, _ := loadNESROM(filename)
+	romData, err := ioutil.ReadFile(filename)
+	if err != nil {
+		return nil
+	}
+
+	c, _ := loadNESROM(romData)
 	// TODO: Cartridge initialization
 	return c
 }
